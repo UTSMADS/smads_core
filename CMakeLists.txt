@@ -15,6 +15,8 @@ find_package(catkin REQUIRED COMPONENTS
     message_generation
     genmsg
     tf
+    roslib
+    amrl_msgs
     )
 
 #catkin_python_setup()
@@ -40,6 +42,7 @@ catkin_package(
 ###########
 
 include_directories(
+    include
     ${catkin_INCLUDE_DIRS}
     ${Eigen_INCLUDE_DIRS}
 )
@@ -48,4 +51,7 @@ include_directories(
 add_executable(message_translator src/message_translator.cpp)
 target_link_libraries(message_translator ${catkin_LIBRARIES})
 
+add_executable(gps_translator_node src/gps_translator.cc)
+target_link_libraries(gps_translator_node ${catkin_LIBRARIES})
+add_dependencies(gps_translator_node smads_comm_generate_messages_cpp)
 
