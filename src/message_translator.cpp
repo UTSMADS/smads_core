@@ -137,8 +137,8 @@ int main(int argc, char** argv)
     // Get input topics, etc
     std::string localization_topic_in;
     nh.param<std::string>("/smads/in/localization/topic", localization_topic_in, "localization");
-    nh.param<std::string>("map_name", map, "UT_Campus");
-    nh.param<std::string>("maps_dir", maps_dir, ros::package::getPath("amrl_maps"));
+    nh.param<std::string>("/smads/in/localization/map_name", map, "UT_Campus");
+    nh.param<std::string>("/smads/in/localization/maps_dir", maps_dir, ros::package::getPath("amrl_maps"));
     gps_->Load(map, maps_dir);
 
     gps_localization_pub_ = nh.advertise<geometry_msgs::PointStamped>(map_to_gps_output_topic, 1);

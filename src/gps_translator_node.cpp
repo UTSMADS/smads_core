@@ -18,7 +18,6 @@ geometry_msgs::PointStamped localization_msg_;
 GPSTranslator* gps_;
 std::string map;
 std::string maps_dir;
-std::string gps_update_topic;
 std::string map_to_gps_input_topic;
 
 
@@ -57,9 +56,8 @@ int main(int argc, char* argv[]) {
   gps_ = new GPSTranslator();
   ros::init(argc, argv, "smads_gps_translator");
   ros::NodeHandle n("~");
-  n.param<std::string>("map_name", map, "UT_Campus");
-  n.param<std::string>("maps_dir", maps_dir, ros::package::getPath("amrl_maps"));
-  n.getParam("gps_update_topic", gps_update_topic);
+  n.param<std::string>("/smads/in/localization/map_name", map, "UT_Campus");
+  n.param<std::string>("/smads/in/localization/maps_dir", maps_dir, ros::package::getPath("amrl_maps"));
   ros::Subscriber gps_sub = n.subscribe(gps_to_map_input_topic, 1, &GpsToMapCallback);
   
   localization_msg_.header.frame_id = "map";
