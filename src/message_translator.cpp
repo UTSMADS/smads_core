@@ -79,16 +79,6 @@ geometry_msgs::Pose2D geometry_posestamped(RenamedValues rv, std::string topic_n
     return res;
 }
 
-// Navigation out Callbacks
-amrl_msgs::Pose2Df navigationCallbackAmrlMsgsPose2Df(const geometry_msgs::Pose2D::ConstPtr &msg){
-    amrl_msgs::Pose2Df out;
-    out.x = msg->x;
-    out.y = msg->y;
-    out.theta = msg->theta;
-    return out;
-}
-
-
 void localizationCallback(const ShapeShifter::ConstPtr& msg,
                    const std::string &topic_name,
                    RosIntrospection::Parser& parser)
@@ -125,15 +115,6 @@ void localizationCallback(const ShapeShifter::ConstPtr& msg,
 
 }
 
-void navigationCallback(const geometry_msgs::Pose2D::ConstPtr &msg){
-
-    // TODO ideally there is a better way handle this
-    if(navigation_message_out == "amrl_msgs/Pose2Df"){
-        navigation_out.publish(navigationCallbackAmrlMsgsPose2Df(msg));
-    }
-}
-
-
 // usage: pass the name of the file as command line argument
 int main(int argc, char** argv)
 {
@@ -143,32 +124,18 @@ int main(int argc, char** argv)
     ros::NodeHandle nh;
     
     // Get input topics
-    std::string navigation_topic_in;
     std::string localization_topic_in;
-    nh.param<std::string>("/smads/in/navigation_cmd", navigation_topic_in, "move_base_simple/goal");
     nh.param<std::string>("/smads/in/localization/topic", localization_topic_in, "localization");
 
 
-    //Get output topics
-
-    nh.param<std::string>("/smads/out/navigation/cmd", navigation_topic_out, "/smads/out/navigation_cmd");
-    nh.param<std::string>("/smads/out/navigation/message_type", navigation_message_out, "amrl_msgs/Pose2Df");
-
 
     boost::function<void(const topic_tools::ShapeShifter::ConstPtr&) > callback;
-    callback = [&parser, navigation_topic_in](const topic_tools::ShapeShifter::ConstPtr& msg) -> void
+    callback = [&parser, localization_topic_in](const topic_tools::ShapeShifter::ConstPtr& msg) -> void
     {
-        localizationCallback(msg, navigation_topic_in, parser) ;
+        localizationCallback(msg, localization_topic_in, parser) ;
     };
     ros::Subscriber localization_input_subscrber = nh.subscribe(localization_topic_in, 10, callback);
-    ros::Subscriber nav_input_subscriber = nh.subscribe(navigation_topic_in, 10, navigationCallback);
     
-    if (navigation_message_out == "amrl_msgs/Pose2Df")
-	navigation_out = nh.advertise<amrl_msgs::Pose2Df>(navigation_topic_out, 10);
-    else{
-        ROS_ERROR("Navigation message output type not supported. No navigation messages will be published on %s", navigation_topic_out.c_str());
-    }    
-
     ros::spin();
     return 0;
 }

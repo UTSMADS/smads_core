@@ -1,0 +1,5 @@
+<launch>
+    <node pkg="smads_core" type="navigation_interface.py" name="navigation_interface"/>
+    <node pkg="smads_core" type="gps_translator_node" name="gps_translator_node"/>
+
+</launch>
