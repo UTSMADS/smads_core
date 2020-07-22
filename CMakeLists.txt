@@ -16,7 +16,6 @@ find_package(catkin REQUIRED COMPONENTS
     genmsg
     tf
     roslib
-    amrl_msgs
     )
 
 #catkin_python_setup()

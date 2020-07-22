@@ -25,7 +25,6 @@
 #include <cmath>
 #include <string>
 
-#include "amrl_msgs/Localization2DMsg.h"
 #include "sensor_msgs/NavSatFix.h"
 #include "geometry_msgs/PointStamped.h"
 #include "smads_core/gps_translator.h"

@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <cmath>
 #include <string>
-#include "amrl_msgs/Localization2DMsg.h"
 #include "ros/ros.h"
 #include "ros/package.h"
 #include "sensor_msgs/NavSatFix.h"

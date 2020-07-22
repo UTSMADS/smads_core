@@ -1,4 +1,3 @@
-#include "amrl_msgs/Pose2Df.h"
 #include <geometry_msgs/Pose2D.h>
 #include <geometry_msgs/Quaternion.h>
 #include <ros/ros.h>
