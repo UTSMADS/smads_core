@@ -98,7 +98,7 @@ class GenericPublisher:
 		self.pub.publish(message)
 
 class SMADSNavigationInterface:
-    NAVIGATION_IN_TOPIC = "/smads/in/navigation_cmd"
+    NAVIGATION_IN_TOPIC = "/smads/navigation/in/cmd"
     
 
     def __init__(self):

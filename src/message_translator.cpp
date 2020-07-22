@@ -1,9 +1,11 @@
-#include "ros_type_introspection/ros_introspection.hpp"
 #include "amrl_msgs/Pose2Df.h"
 #include <geometry_msgs/Pose2D.h>
 #include <geometry_msgs/Quaternion.h>
 #include <ros/ros.h>
 #include <ros/console.h>
+#include "ros/package.h"
+#include "ros_type_introspection/ros_introspection.hpp"
+#include "smads_core/gps_translator.h"
 #include <tf/tf.h>
 #include <topic_tools/shape_shifter.h>
 
@@ -14,9 +16,14 @@ static std::vector<uint8_t> buffer;
 static FlatMessage flat_container;
 static RenamedValues renamed_value;
 
-ros::Publisher navigation_out;
+const std::string map_to_gps_output_topic = "/smads/localization/out/gps";
+
+ros::Publisher gps_localization_pub_;
+geometry_msgs::PointStamped gps_localization_msg_;
 std::string navigation_topic_out;
-std::string navigation_message_out;
+GPSTranslator* gps_;
+std::string map;
+std::string maps_dir;
 
 // Generic Localization-based message translation
 
@@ -106,6 +113,10 @@ void localizationCallback(const ShapeShifter::ConstPtr& msg,
     if (strcmp(msg_pkg.c_str(), "amrl_msgs") == 0) {
         if (strcmp(msg_name.c_str(), "Localization2DMsg") == 0) {
              out_msg = amrl_localization2dmsg(renamed_value, topic_name);
+             const Vector2d p = gps_->MetricToGps(out_msg.x, out_msg.y);
+  	     gps_localization_msg_.point.x = p.x();
+             gps_localization_msg_.point.y = p.y();
+             gps_localization_pub_.publish(gps_localization_msg_);
         }
     }
     else {
@@ -119,15 +130,18 @@ void localizationCallback(const ShapeShifter::ConstPtr& msg,
 int main(int argc, char** argv)
 {
     Parser parser;
-
+    gps_ = new GPSTranslator();
     ros::init(argc, argv, "smads_ros_topic_translator");
     ros::NodeHandle nh;
-    
-    // Get input topics
+    const std::string localization_topic_out = "/smads/out/localization/gps";
+    // Get input topics, etc
     std::string localization_topic_in;
     nh.param<std::string>("/smads/in/localization/topic", localization_topic_in, "localization");
+    nh.param<std::string>("map_name", map, "UT_Campus");
+    nh.param<std::string>("maps_dir", maps_dir, ros::package::getPath("amrl_maps"));
+    gps_->Load(map, maps_dir);
 
-
+    gps_localization_pub_ = nh.advertise<geometry_msgs::PointStamped>(map_to_gps_output_topic, 1);
 
     boost::function<void(const topic_tools::ShapeShifter::ConstPtr&) > callback;
     callback = [&parser, localization_topic_in](const topic_tools::ShapeShifter::ConstPtr& msg) -> void

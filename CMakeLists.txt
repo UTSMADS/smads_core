@@ -25,8 +25,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## catkin specific configuration ##
 ###################################
 catkin_package(
-    INCLUDE_DIRS
-    LIBRARIES
+    INCLUDE_DIRS include
+    LIBRARIES ${PROJECT_NAME}
 
     CATKIN_DEPENDS
     ros_type_introspection
@@ -47,11 +47,13 @@ include_directories(
     ${Eigen_INCLUDE_DIRS}
 )
 
+add_library(gps_translator src/gps_translator.cc)
 
 add_executable(message_translator src/message_translator.cpp)
-target_link_libraries(message_translator ${catkin_LIBRARIES})
+target_link_libraries(message_translator gps_translator ${catkin_LIBRARIES})
 
-add_executable(gps_translator_node src/gps_translator.cc)
-target_link_libraries(gps_translator_node ${catkin_LIBRARIES})
+add_executable(gps_translator_node src/gps_translator_node.cpp)
+target_link_libraries(gps_translator_node gps_translator ${catkin_LIBRARIES})
 add_dependencies(gps_translator_node smads_comm_generate_messages_cpp)
+
 
