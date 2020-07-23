@@ -10,13 +10,25 @@ This is data output from the platform and homogenized into the standard message 
 
 #### Localization / estimated current robot position in Lat/Long
 Topic: 		/smads/localization/out/gps
-Message Type: 	geometry_msgs/PoseStamped
+
+Message Type: 	geometry_msgs/PointStamped
+
+#### Goal Status
+Topic: 		/smads/navigation/out/status
+
+Message Type:	actionlib_msgs/GoalStatus
+
+#### Goal's Planned Path
+Topic: 		/smads/navigation/out/planned_path
+
+Message Type:	nav_msgs/Path
 
 ### Data Input
 This is data or commands you want to send to the platform. The architecture takes the data from these standard message types below and decomposes them into messages that are acceptable to the platform.
 
 #### Send navigation goal to platform 
 Topic:		/smads/navigation/in/cmd
+
 Message Type:	geometry_msgs/Pose2D
 
 ## ROS usage - For Robot Platform Deployment with existing ROS systems
@@ -39,8 +51,15 @@ This parameter should be a string that specifies the directory that the map spec
 #### /smads/out/navigation/topic
 This parameter should be a string that specifies the topic that your robot platform listens for and responds to navigation goals. E.g. `/move_base_simple/goal`
 
-#### smads/out/navigation/msg_type
+#### /smads/out/navigation/msg_type
 This parameter should be a string that specifies the name of the message that your robot platform listens for on the topic detailed above. E.g. `PoseStamped`
 
-#### smads/out/navigation/msg_pkg
+#### /smads/out/navigation/msg_pkg
 This parameter should be a string that specifies the name of the package the message type detailed above belongs to. E.g. `geometry_msgs`
+
+#### /smads/in/navigation/status/topic
+This parameter should be a string that specifies the topic that navigation goal status is published on. At a minimum, this topic should convey that the robot is in one of these states: (pending, active / executing goal, goal success, goal failure)
+
+#### /smads/in/navigation/planned_path/topic
+This parameter should be a string that specifies the topic on which the navigation publishes its global plan to its target goal.
+

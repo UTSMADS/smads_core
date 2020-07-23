@@ -8,8 +8,10 @@ find_package(Eigen3 REQUIRED)
 
 
 find_package(catkin REQUIRED COMPONENTS 
+    actionlib_msgs
     ros_type_introspection
     topic_tools
+    nav_msgs
     sensor_msgs
     geometry_msgs
     message_generation
@@ -28,6 +30,8 @@ catkin_package(
     LIBRARIES ${PROJECT_NAME}
 
     CATKIN_DEPENDS
+    actionlib_msgs
+    nav_msgs
     ros_type_introspection
     topic_tools
     geometry_msgs
