@@ -49,7 +49,6 @@ geometry_msgs::Pose2D amrl_localization2dmsg(RenamedValues rv, std::string topic
 	if (i != std::string::npos)
    	    key.erase(i, topic_name.length()+1);
 
-	printf(" %s = %f\n", key.c_str(), value.convert<double>() );
 	// template is as follows
 	// case(unique field name) : standard_msg.equivilent_field_name = value conversion
 	// of correct type
@@ -118,7 +117,6 @@ nav_msgs::Path nav_path(RenamedValues rv, std::string topic_name) {
 	} 
 
     }
-   ROS_INFO_STREAM(res);
    return res;
 }
 
@@ -215,8 +213,6 @@ void plannedPathCallback(const ShapeShifter::ConstPtr& msg,
                    const std::string &topic_name,
                    RosIntrospection::Parser& parser)
 {
-    printf("here");
-    ROS_INFO("Planned.");
     const std::string&  datatype   =  msg->getDataType();
     const std::string&  definition =  msg->getMessageDefinition();
 
@@ -240,7 +236,6 @@ void plannedPathCallback(const ShapeShifter::ConstPtr& msg,
         if (strcmp(msg_name.c_str(), "Path") == 0) {
              out_msg = nav_path(rv_planned_path, topic_name);
              convert_path_to_GPS(&out_msg);
-             ROS_INFO_STREAM(out_msg);
              planned_path_pub_.publish(out_msg);
         }
     }
@@ -262,7 +257,7 @@ int main(int argc, char** argv)
     std::string goal_status_topic_in;
     std::string planned_path_topic_in;
     nh.param<std::string>("/smads/in/localization/topic", localization_topic_in, "/localization");
-    nh.param<std::string>("/smads/in/navigation/status/topic", goal_status_topic_in, "/navigation/status");
+    nh.param<std::string>("/smads/in/navigation/status/topic", goal_status_topic_in, "/navigation_goal_status");
     nh.param<std::string>("/smads/in/navigation/planned_path/topic", planned_path_topic_in, "/carrot");
     nh.param<std::string>("/smads/in/localization/map_name", map, "UT_Campus");
     nh.param<std::string>("/smads/in/localization/maps_dir", maps_dir, ros::package::getPath("amrl_maps"));
