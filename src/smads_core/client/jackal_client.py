@@ -12,7 +12,7 @@ import rospy
 from abc import ABC, abstractmethod 
 from nav_msgs.msg import Odometry
 from sensor_msgs.msg import LaserScan
-from smads_comm.client import RobotClient
+from smads_core.client import RobotClient
 from amrl_msgs.msg import Pose2Df
 from geometry_msgs.msg import PoseStamped
 

@@ -2,11 +2,10 @@
 
 import actionlib
 import rospy
-import smads_comm.msg
 
 from geometry_msgs.msg import Pose2D, PointStamped
 from sensor_msgs.msg import NavSatFix
-from smads_comm.client import RobotClient
+from smads_core.client import RobotClient
 
 
 class RobotNavigationInterface:

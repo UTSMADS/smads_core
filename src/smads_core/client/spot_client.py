@@ -11,7 +11,7 @@ from bosdyn.client import math_helpers
 from bosdyn.client.estop import EstopClient, EstopEndpoint, EstopKeepAlive
 from bosdyn.client.frame_helpers import ODOM_FRAME_NAME, VISION_FRAME_NAME, get_odom_tform_body, get_vision_tform_body
 from bosdyn.client.lease import LeaseClient, LeaseKeepAlive 
-from smads_comm.client import RobotClient
+from smads_core.client import RobotClient
 
 
 class SpotClient(RobotClient):

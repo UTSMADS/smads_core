@@ -20,7 +20,7 @@ find_package(catkin REQUIRED COMPONENTS
     roslib
     )
 
-#catkin_python_setup()
+catkin_python_setup()
 
 ###################################
 ## catkin specific configuration ##
