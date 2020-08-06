@@ -8,6 +8,9 @@ find_package(Eigen3 REQUIRED)
 
 
 find_package(catkin REQUIRED COMPONENTS 
+    rospy
+    roscpp
+    std_msgs
     actionlib_msgs
     ros_type_introspection
     topic_tools
@@ -57,6 +60,4 @@ target_link_libraries(message_translator gps_translator ${catkin_LIBRARIES})
 
 add_executable(gps_translator_node src/gps_translator_node.cpp)
 target_link_libraries(gps_translator_node gps_translator ${catkin_LIBRARIES})
-add_dependencies(gps_translator_node smads_comm_generate_messages_cpp)
-
 
