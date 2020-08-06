@@ -5,12 +5,12 @@ import threading
 
 from enum import Enum
 
-from smads_comm.client import JackalClient
-from smads_comm.client import SpotClient
-from smads_comm.client import RobotClient
+from smads_core.client import JackalClient
+from smads_core.client import SpotClient
+from smads_core.client import RobotClient
 
-from smads_comm.interface import RobotSensorInterface
-from smads_comm.interface import RobotNavigationInterface
+from smads_core.interface import RobotSensorInterface
+from smads_core.interface import RobotNavigationInterface
 
 class RobotType:
     SPOT    = 1

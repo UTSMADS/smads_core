@@ -1,6 +1,20 @@
 # smads_core
 Core modules for the SMADS robot-side delivery pipeline
 
+## Installation and Running
+This library strives to minimize external dependencies, while providing a basic interface for other platforms to implement over. 
+
+Therefore, it is recommended that any implementation for a given platform be done outside of this library and repository.
+
+In the root of your catkin workspace, fetch the package dependencies:
+
+    $ rosdep install --from-paths src --ignore-src --rosdistro=melodic
+
+now, simply invoke catkin tools:
+
+    $ catkin build smads_core
+
+
 ## ROS usage - For Application Servers
 
 The SMADS architecture is flexible on the data it receives and sends on a particular robot platform. However, it offers standard input and output topics for communication to standard apps. Here, we go into these details.
@@ -63,3 +77,8 @@ This parameter should be a string that specifies the topic that navigation goal 
 #### /smads/in/navigation/planned_path/topic
 This parameter should be a string that specifies the topic on which the navigation publishes its global plan to its target goal.
 
+## API Implementation - For Platform Development through APIs
+
+This library implements an abstract class in `robot_client.py` that allows a developer to implement standardized methods that the architecture will call.
+
+For some of these methods, the data returned is communicated over ROS for core functions such as Navigation or Localization that expect ROS communication.
