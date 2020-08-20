@@ -258,7 +258,7 @@ int main(int argc, char** argv)
     std::string planned_path_topic_in;
     nh.param<std::string>("/smads/in/localization/topic", localization_topic_in, "/localization");
     nh.param<std::string>("/smads/in/navigation/status/topic", goal_status_topic_in, "/navigation_goal_status");
-    nh.param<std::string>("/smads/in/navigation/planned_path/topic", planned_path_topic_in, "/carrot");
+    nh.param<std::string>("/smads/in/navigation/planned_path/topic", planned_path_topic_in, "/trajectory");
     nh.param<std::string>("/smads/in/localization/map_name", map, "UT_Campus");
     nh.param<std::string>("/smads/in/localization/maps_dir", maps_dir, ros::package::getPath("amrl_maps"));
     gps_->Load(map, maps_dir);
