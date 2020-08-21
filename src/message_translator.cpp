@@ -160,8 +160,11 @@ void localizationCallback(const ShapeShifter::ConstPtr& msg,
              gps_mutex.lock();
   	     const Vector2d p = gps_->MetricToGps(out_msg.x, out_msg.y);
              gps_mutex.unlock();
+	     gps_localization_msg_.header.stamp = ros::Time::now();
              gps_localization_msg_.point.x = p.x();
              gps_localization_msg_.point.y = p.y();
+	     // NOTE that this may be a bug. TODO check if theta needs to be transformed via gps library as well
+             gps_localization_msg_.point.z = out_msg.theta;
              gps_localization_pub_.publish(gps_localization_msg_);
         }
     }
