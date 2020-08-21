@@ -104,13 +104,13 @@ class SMADSNavigationInterface:
     def __init__(self):
         self.navigation_in_sub = rospy.Subscriber(self.NAVIGATION_IN_TOPIC, Pose2D, self.gps_waypoint_cb)
         self.gps_translator_sub = rospy.Subscriber("/smads/gps_to_map/result", PointStamped, self.gps_translator_cb)
-	self.gps_translator_pub = rospy.Publisher("/smads/gps_to_map/input", NavSatFix, queue_size=1)
+        self.gps_translator_pub = rospy.Publisher("/smads/gps_to_map/input", NavSatFix, queue_size=1)
 	
-	# All these parameters should be set explicitly
-	nav_out_topic = rospy.get_param("/smads/out/navigation/topic", 'move_base_simple/goal')
-	nav_out_msg_type = rospy.get_param("smads/out/navigation/msg_type", 'Pose2Df')
-	nav_out_msg_pkg = rospy.get_param("smads/out/navigation/msg_pkg", 'amrl_msgs')
-	self.nav_pub = GenericPublisher(nav_out_topic, nav_out_msg_type, nav_out_msg_pkg)    
+        # All these parameters should be set explicitly
+        nav_out_topic = rospy.get_param("/smads/out/navigation/topic", 'move_base_simple/goal')
+        nav_out_msg_type = rospy.get_param("smads/out/navigation/msg_type", 'Pose2Df')
+        nav_out_msg_pkg = rospy.get_param("smads/out/navigation/msg_pkg", 'amrl_msgs')
+        self.nav_pub = GenericPublisher(nav_out_topic, nav_out_msg_type, nav_out_msg_pkg)    
 
     def gps_waypoint_cb(self, data):
         nav = NavSatFix()

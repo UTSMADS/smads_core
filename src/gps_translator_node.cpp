@@ -10,14 +10,16 @@
 using sensor_msgs::NavSatFix;
 const std::string gps_to_map_input_topic = "/smads/gps_to_map/input";
 const std::string gps_to_map_output_topic = "/smads/gps_to_map/result";
+const std::string map_to_gps_input_topic = "/smads/map_to_gps/input";
+const std::string map_to_gps_output_topic = "/smads/map_to_gps/result";
 
 ros::Publisher map_localization_pub_;
+ros::Publisher map_metric_localization_pub_;
 ros::Publisher gps_localization_pub_;
 geometry_msgs::PointStamped localization_msg_;
 GPSTranslator* gps_;
 std::string map;
 std::string maps_dir;
-std::string map_to_gps_input_topic;
 
 
 int test_case(){
@@ -51,6 +53,16 @@ void GpsToMapCallback(const NavSatFix& msg) {
   map_localization_pub_.publish(localization_msg_);
 }
 
+void MapToGpsCallback(const geometry_msgs::PointStamped & msg) {
+  const bool verbose = true;
+  const Vector2d p = gps_->MetricToGps(msg.point.x, msg.point.y);
+  if (verbose) printf(" X,Y: %9.3lf,%9.3lf\n", p.x(), p.y());
+  sensor_msgs::NavSatFix out;
+  out.longitude = p.x();
+  out.latitude = p.y();
+  map_metric_localization_pub_.publish(out);
+}
+
 int main(int argc, char* argv[]) {
   gps_ = new GPSTranslator();
   ros::init(argc, argv, "smads_gps_translator");
@@ -58,10 +70,14 @@ int main(int argc, char* argv[]) {
   n.param<std::string>("/smads/in/localization/map_name", map, "UT_Campus");
   n.param<std::string>("/smads/in/localization/maps_dir", maps_dir, ros::package::getPath("amrl_maps"));
   ros::Subscriber gps_sub = n.subscribe(gps_to_map_input_topic, 1, &GpsToMapCallback);
+  ros::Subscriber metric_sub = n.subscribe(map_to_gps_input_topic, 1, &MapToGpsCallback);
   
   localization_msg_.header.frame_id = "map";
   localization_msg_.header.seq = 0;
   localization_msg_.header.stamp = ros::Time::now();
+   
+  map_metric_localization_pub_ =
+      n.advertise<sensor_msgs::NavSatFix>(map_to_gps_output_topic, 1);
 
   map_localization_pub_ =
       n.advertise<geometry_msgs::PointStamped>(gps_to_map_output_topic, 1);
