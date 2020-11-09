@@ -79,6 +79,8 @@ class GenericPublisher:
         self.msg_type = msg_type
         self.ros_pkg = ros_pkg
         self.qualified_name = ros_pkg+'/'+msg_type
+        # ensure package can be found if its not catkinized
+        roslib.load_manifest(self.ros_pkg)
         self.msg_class = getattr(import_module(self.ros_pkg+'.msg'), self.msg_type)
         self.pub = rospy.Publisher(self.output_topic, self.msg_class, queue_size=10)
 
