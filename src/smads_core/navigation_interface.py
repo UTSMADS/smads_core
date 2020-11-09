@@ -30,40 +30,40 @@ that is already published.
 """
 class AnyListener(object):
     def __init__(self, topic='move_base_simple/goal'):
-	self.pkg_name = None
-	self.msg_name = None
-	self.msg_class = None
+        self.pkg_name = None
+        self.msg_name = None
+        self.msg_class = None
 
-	topics = [i[0].strip('/') for i in rospy.get_published_topics()]
-	if topic not in topics:
-		rospy.logerr("Input topic {} not present. Cannot glean message information.", input_topic)
-		return 0
+        topics = [i[0].strip('/') for i in rospy.get_published_topics()]
+        if topic not in topics:
+            rospy.logerr("Input topic {} not present. Cannot glean message information.", input_topic)
+            return 0
 
         self._binary_sub = rospy.Subscriber(topic, rospy.AnyMsg, self.topic_callback)
 
 
     def topic_callback(self, data):
         connection_header =  data._connection_header['type'].split('/')
-	ros_pkg = connection_header[0]
+        ros_pkg = connection_header[0]
         msg_type = connection_header[1]
-        print 'Message type detected as ' + msg_type
+        #print('Message type detected as ' + msg_type)
         msg_class = getattr(import_module(ros_pkg+'.msg'), msg_type)
         self._binary_sub.unregister()       
-	self.pkg_name = ros_pkg
-	self.msg_name = msg_type
-	self.msg_class = msg_class
+        self.pkg_name = ros_pkg
+        self.msg_name = msg_type
+        self.msg_class = msg_class
 
     def get_pkg_name(self):
-	return self.pkg_name
+        return self.pkg_name
  
     def get_msg_name(self):
-	return self.msg_name
+        return self.msg_name
 
     def get_msg_class(self):
-	return self.msg_class
+        return self.msg_class
 
     def get_qualified_name(self):
-	return self.pkg_name + '/' + self.msg_name
+        return self.pkg_name + '/' + self.msg_name
 
 
 """
@@ -75,27 +75,27 @@ Example of expected format:
 """
 class GenericPublisher:
     def __init__(self, output_topic, msg_type, ros_pkg):
-	self.output_topic = output_topic
-	self.msg_type = msg_type
-	self.ros_pkg = ros_pkg
-	self.qualified_name = ros_pkg+'/'+msg_type
-	self.msg_class = getattr(import_module(self.ros_pkg+'.msg'), self.msg_type)
-	self.pub = rospy.Publisher(self.output_topic, self.msg_class, queue_size=10)
+        self.output_topic = output_topic
+        self.msg_type = msg_type
+        self.ros_pkg = ros_pkg
+        self.qualified_name = ros_pkg+'/'+msg_type
+        self.msg_class = getattr(import_module(self.ros_pkg+'.msg'), self.msg_type)
+        self.pub = rospy.Publisher(self.output_topic, self.msg_class, queue_size=10)
 
     # Take in navigation specific data, assemble into a supported message type
     # types: x,y,z,theta,z 	: floats
     #        quaternion		: geometry_msgs/Quaternion
     #	     header		: std_msgs/Header
     def publish(self, x , y, theta=None, z=None, quaternion=None, header=None):
-	if self.qualified_name == "amrl_msgs/Pose2Df":
+        if self.qualified_name == "amrl_msgs/Pose2Df":
                 assert theta is not None
-		dictionary = { 'x': x, 'y':y, 'theta':theta }
-		message = message_converter.convert_dictionary_to_ros_message(self.qualified_name, dictionary)
-		rospy.logdebug(message)
-		#TODO remove this potential endless loop
-		while self.pub.get_num_connections() < 1 :
-			rospy.sleep(0.05)
-		self.pub.publish(message)
+                dictionary = { 'x': x, 'y':y, 'theta':theta }
+                message = message_converter.convert_dictionary_to_ros_message(self.qualified_name, dictionary)
+                rospy.logdebug(message)
+                #TODO remove this potential endless loop
+                while self.pub.get_num_connections() < 1 :
+                    rospy.sleep(0.05)
+                self.pub.publish(message)
 
 class SMADSNavigationInterface:
     NAVIGATION_IN_TOPIC = "/smads/navigation/in/cmd"
