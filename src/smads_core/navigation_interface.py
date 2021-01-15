@@ -98,6 +98,20 @@ class GenericPublisher:
                 while self.pub.get_num_connections() < 1 :
                     rospy.sleep(0.05)
                 self.pub.publish(message)
+        if self.qualified_name == "geometry_msgs/PoseStamped":
+                assert theta is not None
+                header = {}
+                pose = { 'x': x, 'y':y, 'z':0  }
+                position= { 'position' : pose}
+                orientation = {}
+                dictionary = { 'pose':position }
+                message = message_converter.convert_dictionary_to_ros_message(self.qualified_name, dictionary)
+                rospy.logdebug(message)
+                #TODO remove this potential endless loop
+                while self.pub.get_num_connections() < 1 :
+                    rospy.sleep(0.05)
+                self.pub.publish(message)
+
 
 class SMADSNavigationInterface:
     NAVIGATION_IN_TOPIC = "/smads/navigation/in/cmd"
